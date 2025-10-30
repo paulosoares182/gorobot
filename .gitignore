@@ -1,0 +1,55 @@
+# .gitignore padrão para projetos Go
+
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary
+*.test
+
+# Output of the go coverage tool
+*.out
+coverage.out
+
+# Build directories / output
+/bin/
+/_build/
+/_out/
+
+# Dependency directories
+vendor/
+Godeps/
+Godeps.json
+
+# Go workspace
+go.work
+go.work.sum
+
+# IDEs and editors
+.vscode/
+.idea/
+*.iml
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Editor temporary files
+*~
+*.swp
+*.swo
+
+# Environment files
+.env
+
+# Logs
+*.log
+
+# Misc
+*.cache
+
+# Vim swap files
+.swp
