@@ -23,7 +23,7 @@ type Engine interface {
 	OnScriptFinished(handler ScriptFinishedHandler)
 
 	IsRunning() bool
-	ListVariable() []VariableTemplate
+	ListVariable() []Variable
 
 	RegisterService(name string, svc any)
 	GetService(name string) (any, bool)

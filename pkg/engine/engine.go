@@ -1,4 +1,4 @@
-package infra
+package engine
 
 import (
 	"fmt"
@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"gorobot/pkg/domain"
+	"gorobot/pkg/serializer"
 )
 
 type EngineImpl struct {
@@ -14,7 +15,7 @@ type EngineImpl struct {
 
 	running   bool
 	script    *domain.Script
-	variables []domain.VariableTemplate
+	variables []domain.Variable
 
 	services map[string]any
 
@@ -78,10 +79,10 @@ func (e *EngineImpl) IsRunning() bool {
 	return e.running
 }
 
-func (e *EngineImpl) ListVariable() []domain.VariableTemplate {
+func (e *EngineImpl) ListVariable() []domain.Variable {
 	e.mu.RLock()
 	defer e.mu.RUnlock()
-	vars := make([]domain.VariableTemplate, len(e.variables))
+	vars := make([]domain.Variable, len(e.variables))
 	copy(vars, e.variables)
 	return vars
 }
@@ -103,7 +104,7 @@ func (e *EngineImpl) GetService(name string) (any, bool) {
 }
 
 func (e *EngineImpl) SetScriptFromJSON(jsonStr string) error {
-	s, err := UnmarshalScript([]byte(jsonStr))
+	s, err := serializer.UnmarshalScript([]byte(jsonStr))
 	if err != nil {
 		return err
 	}

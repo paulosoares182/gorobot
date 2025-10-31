@@ -1,4 +1,4 @@
-package infra
+package serializer
 
 import (
 	"encoding/json"
@@ -9,24 +9,17 @@ import (
 	"gorobot/pkg/domain"
 )
 
-// registry para mapear tags de comando a funções construtoras.
 var commandRegistry = map[string]func() domain.Command{}
 
-// RegisterCommand registra um construtor para a tag do comando.
 func RegisterCommand(tag string, ctor func() domain.Command) {
 	commandRegistry[tag] = ctor
 }
 
 func init() {
-	// registrar comandos conhecidos aqui. Novos comandos devem ser registrados
-	// em init() deste pacote ou via RegisterCommand durante a inicialização da aplicação.
 	RegisterCommand("CreateActionCommand", func() domain.Command { return actions.NewCreateActionCommand() })
 	RegisterCommand("WriteCommand", func() domain.Command { return console.NewWriteCommand() })
 }
 
-// MarshalScript serializa um domain.Script incluindo comandos polimórficos.
-// Antes de serializar, achata a árvore de comandos (todos os nós viram entradas de
-// topo) para que cada comando seja representado separadamente com seu ParentID.
 func MarshalScript(s *domain.Script) ([]byte, error) {
 	type alias domain.Script
 	var flat []json.RawMessage
