@@ -1,18 +1,28 @@
 package domain
 
 import (
+	"errors"
 	"fmt"
 	"regexp"
 	"strings"
 )
 
 type Variable struct {
-	Type  string `json:"type"`
 	Name  string `json:"name"`
 	Value any    `json:"value"`
 }
 
-func ExtractVariableValue(text string, vars []Variable) string {
+func (v Variable) Validate() error {
+	if v.Name == "" {
+		return errors.New(`field "Name" is required`)
+	}
+	if v.Value == nil {
+		return errors.New(`field "Value" is required`)
+	}
+	return nil
+}
+
+func ExtractVariableValue(vars []Variable, text string) string {
 	groupRe := regexp.MustCompile(`^(\{+)([a-zA-Z0-9_]+)(\}+)$`)
 	findRe := regexp.MustCompile(`\{+[a-zA-Z0-9_]+\}+`)
 
@@ -65,6 +75,33 @@ func ExtractVariableValue(text string, vars []Variable) string {
 	}
 
 	return result
+}
+
+func UpsertVariable(vars []Variable, name string, value any) []Variable {
+	v := findVariable(vars, name)
+	if v != nil {
+		v.Value = value
+		return vars
+	}
+
+	vars = append(vars, Variable{
+		Name:  name,
+		Value: value,
+	})
+	return vars
+}
+
+func RemoveVariable(vars []Variable, name string) []Variable {
+	for i := range vars {
+		if vars[i].Name == name {
+			return append(vars[:i], vars[i+1:]...)
+		}
+	}
+	return vars
+}
+
+func IsValidVariableSyntax(text string) bool {
+	return regexp.MustCompile(`^\{[a-zA-Z0-9_]+\}$`).MatchString(strings.TrimSpace(text))
 }
 
 func findVariable(vars []Variable, name string) *Variable {
