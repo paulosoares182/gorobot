@@ -31,7 +31,7 @@ type Engine interface {
 	Run(throwException bool) (bool, error)
 	SetScriptFromJSON(jsonStr string) error
 	SetScript(script *Script)
-	ExecuteCommand(cmd Command)
+	ExecuteCommand(cmd Command) bool
 	GetScript() *Script
 	GetHttpClient() *http.Client
 

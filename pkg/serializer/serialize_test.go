@@ -13,11 +13,11 @@ import (
 
 func TestCommandStructure(t *testing.T) {
 	// Arrange
-	parent := actions.NewCreateActionCommand()
-	child := actions.NewCreateActionCommand()
-	grand := console.NewWriteCommand()
-	parent2 := actions.NewCreateActionCommand()
-	child2 := console.NewWriteCommand()
+	parent := actions.NewCreateActionCommand("parentAction", nil)
+	child := actions.NewCreateActionCommand("childAction", nil)
+	grand := console.NewWriteCommand("")
+	parent2 := actions.NewCreateActionCommand("parent2Action", nil)
+	child2 := console.NewWriteCommand("")
 
 	// Act
 	err1 := parent.AddCommand(child)
@@ -34,13 +34,13 @@ func TestCommandStructure(t *testing.T) {
 }
 func TestMarshalUnmarshalScript(t *testing.T) {
 	// Arrange
-	parent := actions.NewCreateActionCommand()
-	child := actions.NewCreateActionCommand()
+	parent := actions.NewCreateActionCommand("parentAction", nil)
+	child := actions.NewCreateActionCommand("childAction", nil)
 
-	grand := console.NewWriteCommand()
+	grand := console.NewWriteCommand("")
 
-	parent2 := actions.NewCreateActionCommand()
-	child2 := console.NewWriteCommand()
+	parent2 := actions.NewCreateActionCommand("parent2Action", nil)
+	child2 := console.NewWriteCommand("")
 
 	parent.AddCommand(child)
 	child.AddCommand(grand)

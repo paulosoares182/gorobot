@@ -175,8 +175,9 @@ func (e *EngineImpl) Run(throwException bool) (bool, error) {
 	return true, nil
 }
 
-func (e *EngineImpl) ExecuteCommand(cmd domain.Command) {
-	_ = e.executeCommand(cmd)
+func (e *EngineImpl) ExecuteCommand(cmd domain.Command) bool {
+	err := e.executeCommand(cmd)
+	return err == nil
 }
 
 func (e *EngineImpl) executeCommand(cmd domain.Command) error {
@@ -193,6 +194,7 @@ func (e *EngineImpl) executeCommand(cmd domain.Command) error {
 		for _, h := range e.commandExcept {
 			h(cmd, err)
 		}
+		e.running = false
 		return err
 	}
 

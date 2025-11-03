@@ -23,19 +23,19 @@ type ScriptCommand struct {
 	ParentID        string    `json:"parentId,omitempty"`
 }
 
-func (b *ScriptCommand) GetID() string               { return b.ID }
-func (b *ScriptCommand) GetTag() string              { return b.Tag }
-func (b *ScriptCommand) GetComment() string          { return b.Comment }
-func (b *ScriptCommand) SetComment(comment string)   { b.Comment = comment }
-func (b *ScriptCommand) CanHaveChildCommands() bool  { return b.CanHaveChildren }
-func (b *ScriptCommand) GetCommands() []Command      { return b.Commands }
-func (b *ScriptCommand) SetParentID(parentID string) { b.ParentID = parentID }
+func (c *ScriptCommand) GetID() string               { return c.ID }
+func (c *ScriptCommand) GetTag() string              { return c.Tag }
+func (c *ScriptCommand) GetComment() string          { return c.Comment }
+func (c *ScriptCommand) SetComment(comment string)   { c.Comment = comment }
+func (c *ScriptCommand) CanHaveChildCommands() bool  { return c.CanHaveChildren }
+func (c *ScriptCommand) GetCommands() []Command      { return c.Commands }
+func (c *ScriptCommand) SetParentID(parentID string) { c.ParentID = parentID }
 
-func (b *ScriptCommand) AddCommand(cmd Command) error {
-	if !b.CanHaveChildren {
+func (c *ScriptCommand) AddCommand(cmd Command) error {
+	if !c.CanHaveChildren {
 		return errors.New("this command cannot have child commands")
 	}
-	cmd.SetParentID(b.ID)
-	b.Commands = append(b.Commands, cmd)
+	cmd.SetParentID(c.ID)
+	c.Commands = append(c.Commands, cmd)
 	return nil
 }

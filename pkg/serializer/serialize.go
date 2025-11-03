@@ -16,8 +16,8 @@ func RegisterCommand(tag string, ctor func() domain.Command) {
 }
 
 func init() {
-	RegisterCommand("CreateActionCommand", func() domain.Command { return actions.NewCreateActionCommand() })
-	RegisterCommand("WriteCommand", func() domain.Command { return console.NewWriteCommand() })
+	RegisterCommand("CreateActionCommand", func() domain.Command { return actions.DefaultWriteCommand() })
+	RegisterCommand("WriteCommand", func() domain.Command { return console.DefaultWriteCommand() })
 }
 
 func MarshalScript(s *domain.Script) ([]byte, error) {
@@ -109,7 +109,7 @@ func UnmarshalScript(data []byte) (*domain.Script, error) {
 
 		ctor, ok := commandRegistry[tag]
 		if !ok {
-			return nil, fmt.Errorf("tipo de comando desconhecido: %s", tag)
+			return nil, fmt.Errorf("unknown command type: %s", tag)
 		}
 		cmd := ctor()
 		if err := json.Unmarshal(cmdData, cmd); err != nil {

@@ -13,7 +13,7 @@ import (
 
 func TestEngineRunEvents(t *testing.T) {
 	// Arrange
-	ca := actions.NewCreateActionCommand()
+	ca := actions.NewCreateActionCommand("myAction", nil)
 	w := console.NewWriteCommand("Hello, World!")
 	ca.AddCommand(w)
 	s := domain.NewScript()

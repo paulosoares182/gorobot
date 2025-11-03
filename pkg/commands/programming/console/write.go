@@ -11,18 +11,20 @@ type WriteCommand struct {
 	Message string `json:"value"`
 }
 
-func NewWriteCommand(message ...string) *WriteCommand {
-	_message := ""
-	if len(message) > 0 {
-		_message = message[0]
+func NewWriteCommand(message string) *WriteCommand {
+	return &WriteCommand{
+		ScriptCommand: DefaultWriteCommand().ScriptCommand,
+		Message:       message,
 	}
+}
+
+func DefaultWriteCommand() *WriteCommand {
 	return &WriteCommand{
 		ScriptCommand: domain.ScriptCommand{
 			ID:              uuid.NewString(),
 			Tag:             "WriteCommand",
 			CanHaveChildren: false,
 		},
-		Message: _message,
 	}
 }
 
