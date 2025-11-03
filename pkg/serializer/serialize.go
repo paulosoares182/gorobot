@@ -16,7 +16,7 @@ func RegisterCommand(tag string, ctor func() domain.Command) {
 }
 
 func init() {
-	RegisterCommand("CreateActionCommand", func() domain.Command { return actions.DefaultWriteCommand() })
+	RegisterCommand("CreateActionCommand", func() domain.Command { return actions.DefaultCreateActionCommand() })
 	RegisterCommand("WriteCommand", func() domain.Command { return console.DefaultWriteCommand() })
 }
 

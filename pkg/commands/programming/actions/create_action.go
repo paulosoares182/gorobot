@@ -14,13 +14,13 @@ type CreateActionCommand struct {
 
 func NewCreateActionCommand(name string, parameters *string) *CreateActionCommand {
 	return &CreateActionCommand{
-		ScriptCommand: DefaultWriteCommand().ScriptCommand,
+		ScriptCommand: DefaultCreateActionCommand().ScriptCommand,
 		Name:          name,
 		Parameters:    parameters,
 	}
 }
 
-func DefaultWriteCommand() *CreateActionCommand {
+func DefaultCreateActionCommand() *CreateActionCommand {
 	return &CreateActionCommand{
 		ScriptCommand: domain.ScriptCommand{
 			ID:              uuid.NewString(),
@@ -30,14 +30,22 @@ func DefaultWriteCommand() *CreateActionCommand {
 	}
 }
 
-func (c *CreateActionCommand) Run(engine domain.Engine) (any, error) {
-	if len(c.Commands) > 0 {
-		for _, child := range c.Commands {
-			ok := engine.ExecuteCommand(child)
-			if !ok {
-				break
+func (c *CreateActionCommand) Run(e domain.Engine) (any, error) {
+	action := func() {
+		if len(c.Commands) > 0 {
+			// TODO: enable all children commands
+			for _, child := range c.Commands {
+				ok := e.ExecuteCommand(child)
+				if !ok {
+					break
+				}
 			}
 		}
 	}
+
+	//TODO - handle parameters
+	t := domain.NewActionTemplate(action, []domain.ActionArgs{})
+	e.SetVariable(c.Name, t)
+
 	return nil, nil
 }

@@ -211,6 +211,17 @@ func (e *EngineImpl) executeCommand(cmd domain.Command) error {
 	return nil
 }
 
+func (e *EngineImpl) SetVariable(name string, value any) {
+	e.variables = domain.UpsertVariable(e.ListVariable(), name, value)
+}
+
+func (e *EngineImpl) ExtractVariableValue(name string) string {
+	return domain.ExtractVariableValue(e.variables, name)
+}
+func (e *EngineImpl) ExtractVariableObject(name string) any {
+	return domain.ExtractVariableObject(e.variables, name)
+}
+
 func (e *EngineImpl) TestCondition(expression string) bool {
 	return expression == "true"
 }

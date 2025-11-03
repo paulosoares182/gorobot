@@ -3,6 +3,7 @@ package domain
 import (
 	"errors"
 	"fmt"
+	"gorobot/pkg/utils"
 	"regexp"
 	"strings"
 )
@@ -47,6 +48,9 @@ func ExtractVariableValue(vars []Variable, text string) string {
 			if k == 1 {
 				v := findVariable(vars, variableName)
 				if v != nil {
+					if !isPrimitiveType(v.Value) {
+						return match
+					}
 					changed = true
 					return fmt.Sprint(v.Value)
 				}
@@ -58,6 +62,11 @@ func ExtractVariableValue(vars []Variable, text string) string {
 				if v == nil {
 					return match
 				}
+
+				if !isPrimitiveType(v.Value) {
+					return match
+				}
+
 				vValue := fmt.Sprint(v.Value)
 
 				replacement := strings.Repeat("{", k-1) + vValue + strings.Repeat("}", k-1)
@@ -75,6 +84,15 @@ func ExtractVariableValue(vars []Variable, text string) string {
 	}
 
 	return result
+}
+
+func ExtractVariableObject(vars []Variable, name string) any {
+
+	v := findVariable(vars, utils.RemoveVariableSyntax(strings.TrimSpace(name)))
+	if v != nil {
+		return v.Value
+	}
+	return nil
 }
 
 func UpsertVariable(vars []Variable, name string, value any) []Variable {
@@ -102,6 +120,15 @@ func RemoveVariable(vars []Variable, name string) []Variable {
 
 func IsValidVariableSyntax(text string) bool {
 	return regexp.MustCompile(`^\{[a-zA-Z0-9_]+\}$`).MatchString(strings.TrimSpace(text))
+}
+
+func isPrimitiveType(v any) bool {
+	switch v.(type) {
+	case string, int, float32, float64, bool:
+		return true
+	default:
+		return false
+	}
 }
 
 func findVariable(vars []Variable, name string) *Variable {

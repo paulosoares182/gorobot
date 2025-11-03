@@ -13,11 +13,13 @@ import (
 
 func TestEngineRunEvents(t *testing.T) {
 	// Arrange
-	ca := actions.NewCreateActionCommand("myAction", nil)
-	w := console.NewWriteCommand("Hello, World!")
-	ca.AddCommand(w)
+	action := actions.NewCreateActionCommand("myAction", nil)
+	write := console.NewWriteCommand("Hello, World!")
+	invoke := actions.NewInvokeActionCommand("myAction", nil)
+
+	action.AddCommand(write)
 	s := domain.NewScript()
-	s.Commands = append(s.Commands, ca)
+	s.Commands = append(s.Commands, action, invoke)
 
 	eng := NewEngine()
 	eng.SetScript(s)
@@ -59,6 +61,6 @@ func TestEngineRunEvents(t *testing.T) {
 	assert.Equal(t, true, called["scriptStarted"], "scriptStarted should be called")
 	assert.Equal(t, true, called["commandStarted"], "commandStarted should be called")
 	assert.Equal(t, true, called["output"], "output should be called")
-	assert.Equal(t, w.Message, called["outputValue"], "outputValue should be correct")
+	assert.Equal(t, write.Message, called["outputValue"], "outputValue should be correct")
 	assert.Equal(t, true, called["commandFinished"], "commandFinished should be called")
 }

@@ -131,6 +131,33 @@ func TestExtractVariableValue_MoreNestedUnknown(t *testing.T) {
 	assert.Equal(t, want, got)
 }
 
+func TestExtractVariableValue_ShouldReturnOriginalIfNotPrimitive(t *testing.T) {
+	vars := []Variable{
+		{Name: "arr", Value: []any{1, 2, 3}},
+	}
+
+	text := "Array: {arr}"
+	want := "Array: {arr}"
+
+	got := ExtractVariableValue(vars, text)
+	assert.Equal(t, want, got)
+}
+
+func TestExtractVariableObject_ReturnsValueIfExists(t *testing.T) {
+	vars := []Variable{
+		{Name: "arr", Value: []any{1, 2, 3}},
+	}
+
+	text1 := "{arr}"
+	text2 := "arr"
+
+	got1 := ExtractVariableObject(vars, text1)
+	got2 := ExtractVariableObject(vars, text2)
+
+	assert.Equal(t, []any{1, 2, 3}, got1)
+	assert.Equal(t, []any{1, 2, 3}, got2)
+}
+
 func TestUpsertVariable_NewVariable(t *testing.T) {
 	vars := []Variable{
 		{Name: "var1", Value: "value1"},

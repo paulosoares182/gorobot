@@ -35,6 +35,10 @@ type Engine interface {
 	GetScript() *Script
 	GetHttpClient() *http.Client
 
+	SetVariable(name string, value any)
+	ExtractVariableValue(name string) string
+	ExtractVariableObject(name string) any
+
 	TestCondition(expression string) bool
 	GetDateTime(expression string) (time.Time, error)
 	ExecuteExpression(expression string) (any, error)
