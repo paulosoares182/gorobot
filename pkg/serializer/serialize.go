@@ -4,21 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 
-	actions "gorobot/pkg/commands/programming/actions"
-	console "gorobot/pkg/commands/programming/console"
+	"gorobot/pkg/commands"
 	"gorobot/pkg/domain"
 )
-
-var commandRegistry = map[string]func() domain.Command{}
-
-func RegisterCommand(tag string, ctor func() domain.Command) {
-	commandRegistry[tag] = ctor
-}
-
-func init() {
-	RegisterCommand("CreateActionCommand", func() domain.Command { return actions.DefaultCreateActionCommand() })
-	RegisterCommand("WriteCommand", func() domain.Command { return console.DefaultWriteCommand() })
-}
 
 func MarshalScript(s *domain.Script) ([]byte, error) {
 	type alias domain.Script
@@ -107,7 +95,7 @@ func UnmarshalScript(data []byte) (*domain.Script, error) {
 			}
 		}
 
-		ctor, ok := commandRegistry[tag]
+		ctor, ok := commands.CommandRegistry[tag]
 		if !ok {
 			return nil, fmt.Errorf("unknown command type: %s", tag)
 		}

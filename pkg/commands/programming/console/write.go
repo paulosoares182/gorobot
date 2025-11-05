@@ -2,6 +2,7 @@ package commands
 
 import (
 	"gorobot/pkg/domain"
+	"reflect"
 
 	"github.com/google/uuid"
 )
@@ -10,6 +11,8 @@ type WriteCommand struct {
 	domain.ScriptCommand
 	Message string `json:"value"`
 }
+
+var WriteCommandTag = reflect.TypeOf(WriteCommand{}).Name()
 
 func NewWriteCommand(message string) *WriteCommand {
 	return &WriteCommand{
@@ -22,7 +25,7 @@ func DefaultWriteCommand() *WriteCommand {
 	return &WriteCommand{
 		ScriptCommand: domain.ScriptCommand{
 			ID:              uuid.NewString(),
-			Tag:             "WriteCommand",
+			Tag:             WriteCommandTag,
 			CanHaveChildren: false,
 		},
 	}

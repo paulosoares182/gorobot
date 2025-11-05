@@ -3,6 +3,7 @@ package commands
 import (
 	"errors"
 	"gorobot/pkg/domain"
+	"reflect"
 
 	"github.com/google/uuid"
 )
@@ -12,6 +13,8 @@ type InvokeActionCommand struct {
 	Name       string  `json:"name"`
 	Parameters *string `json:"parameters"`
 }
+
+var InvokeActionCommandTag = reflect.TypeOf(InvokeActionCommand{}).Name()
 
 func NewInvokeActionCommand(name string, parameters *string) *InvokeActionCommand {
 	return &InvokeActionCommand{
@@ -25,7 +28,7 @@ func DefaultInvokeActionCommand() *InvokeActionCommand {
 	return &InvokeActionCommand{
 		ScriptCommand: domain.ScriptCommand{
 			ID:              uuid.NewString(),
-			Tag:             "InvokeActionCommand",
+			Tag:             InvokeActionCommandTag,
 			CanHaveChildren: true,
 		},
 	}
