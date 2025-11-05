@@ -24,18 +24,18 @@ func TestVariable_Validate_MissingName(t *testing.T) {
 	assert.Equal(t, `field "Name" is required`, err.Error())
 }
 
-func TestExtractVariableValue_SimpleReplacement(t *testing.T) {
+func TestExtractAsString_SimpleReplacement(t *testing.T) {
 	vars := []Variable{
 		{Name: "name", Value: "John Doe"},
 	}
 	text := "Hello, {name}!"
 	want := "Hello, John Doe!"
 
-	got := ExtractVariableValue(vars, text)
+	got := ExtractAsString(vars, text)
 	assert.Equal(t, want, got)
 }
 
-func TestExtractVariableValue_NestedVariableExists(t *testing.T) {
+func TestExtractAsString_NestedVariableExists(t *testing.T) {
 	vars := []Variable{
 		{Name: "name", Value: "John Doe"},
 		{Name: "foo", Value: "bar"},
@@ -44,11 +44,11 @@ func TestExtractVariableValue_NestedVariableExists(t *testing.T) {
 	text := "Hello, {name}! Your product: {{_foo}}."
 	want := "Hello, John Doe! Your product: bar."
 
-	got := ExtractVariableValue(vars, text)
+	got := ExtractAsString(vars, text)
 	assert.Equal(t, want, got)
 }
 
-func TestExtractVariableValue_NestedVariableUnknown(t *testing.T) {
+func TestExtractAsString_NestedVariableUnknown(t *testing.T) {
 	vars := []Variable{
 		{Name: "name", Value: "John Doe"},
 		{Name: "_foo", Value: "foo"},
@@ -56,22 +56,22 @@ func TestExtractVariableValue_NestedVariableUnknown(t *testing.T) {
 	text := "Hello, {name}! Your product: {{_foo}}."
 	want := "Hello, John Doe! Your product: {foo}."
 
-	got := ExtractVariableValue(vars, text)
+	got := ExtractAsString(vars, text)
 	assert.Equal(t, want, got)
 }
 
-func TestExtractVariableValue_UnknownVariable(t *testing.T) {
+func TestExtractAsString_UnknownVariable(t *testing.T) {
 	vars := []Variable{
 		{Name: "name", Value: "John Doe"},
 	}
 	text := "Hello, {name}! Code: {unknown}."
 	want := "Hello, John Doe! Code: {unknown}."
 
-	got := ExtractVariableValue(vars, text)
+	got := ExtractAsString(vars, text)
 	assert.Equal(t, want, got)
 }
 
-func TestExtractVariableValue_MixedVariables(t *testing.T) {
+func TestExtractAsString_MixedVariables(t *testing.T) {
 	vars := []Variable{
 		{Name: "name", Value: "John Doe"},
 		{Name: "_foo", Value: "foo"},
@@ -81,20 +81,20 @@ func TestExtractVariableValue_MixedVariables(t *testing.T) {
 	text := "Hello, {name}! Product: {{_foo}}, item: {product}, code: {code}."
 	want := "Hello, John Doe! Product: bar, item: t-shirt, code: {code}."
 
-	got := ExtractVariableValue(vars, text)
+	got := ExtractAsString(vars, text)
 	assert.Equal(t, want, got)
 }
 
-func TestExtractVariableValue_NoVariables(t *testing.T) {
+func TestExtractAsString_NoVariables(t *testing.T) {
 	vars := []Variable{}
 	text := "Hello World"
 	want := "Hello World"
 
-	got := ExtractVariableValue(vars, text)
+	got := ExtractAsString(vars, text)
 	assert.Equal(t, want, got)
 }
 
-func TestExtractVariableValue_UnderscoreAndNumbers(t *testing.T) {
+func TestExtractAsString_UnderscoreAndNumbers(t *testing.T) {
 	vars := []Variable{
 		{Name: "_foo1", Value: "value1"},
 		{Name: "bar_2", Value: "value2"},
@@ -102,11 +102,11 @@ func TestExtractVariableValue_UnderscoreAndNumbers(t *testing.T) {
 	text := "Testing {_foo1} and {bar_2}."
 	want := "Testing value1 and value2."
 
-	got := ExtractVariableValue(vars, text)
+	got := ExtractAsString(vars, text)
 	assert.Equal(t, want, got)
 }
 
-func TestExtractVariableValue_MoreNested(t *testing.T) {
+func TestExtractAsString_MoreNested(t *testing.T) {
 	vars := []Variable{
 		{Name: "super_foo_bar", Value: "_foo"},
 		{Name: "_foo", Value: "foo"},
@@ -115,11 +115,11 @@ func TestExtractVariableValue_MoreNested(t *testing.T) {
 	text := "Deep: {{{{super_foo_bar}}}} {_foo}:{foo}"
 	want := "Deep: {bar} foo:bar"
 
-	got := ExtractVariableValue(vars, text)
+	got := ExtractAsString(vars, text)
 	assert.Equal(t, want, got)
 }
 
-func TestExtractVariableValue_MoreNestedUnknown(t *testing.T) {
+func TestExtractAsString_MoreNestedUnknown(t *testing.T) {
 	vars := []Variable{
 		{Name: "_foo", Value: "foo"},
 		{Name: "foo", Value: "bar"},
@@ -127,11 +127,11 @@ func TestExtractVariableValue_MoreNestedUnknown(t *testing.T) {
 	text := "Deep: {{{{unknown}}}} {_foo}:{foo}"
 	want := "Deep: {{{{unknown}}}} foo:bar"
 
-	got := ExtractVariableValue(vars, text)
+	got := ExtractAsString(vars, text)
 	assert.Equal(t, want, got)
 }
 
-func TestExtractVariableValue_ShouldReturnOriginalIfNotPrimitive(t *testing.T) {
+func TestExtractAsString_ShouldReturnOriginalIfNotPrimitive(t *testing.T) {
 	vars := []Variable{
 		{Name: "arr", Value: []any{1, 2, 3}},
 	}
@@ -139,11 +139,11 @@ func TestExtractVariableValue_ShouldReturnOriginalIfNotPrimitive(t *testing.T) {
 	text := "Array: {arr}"
 	want := "Array: {arr}"
 
-	got := ExtractVariableValue(vars, text)
+	got := ExtractAsString(vars, text)
 	assert.Equal(t, want, got)
 }
 
-func TestExtractVariableObject_ReturnsValueIfExists(t *testing.T) {
+func TestExtractAsAny_ReturnsValueIfExists(t *testing.T) {
 	vars := []Variable{
 		{Name: "arr", Value: []any{1, 2, 3}},
 	}
@@ -151,8 +151,8 @@ func TestExtractVariableObject_ReturnsValueIfExists(t *testing.T) {
 	text1 := "{arr}"
 	text2 := "arr"
 
-	got1 := ExtractVariableObject(vars, text1)
-	got2 := ExtractVariableObject(vars, text2)
+	got1 := ExtractAsAny(vars, text1)
+	got2 := ExtractAsAny(vars, text2)
 
 	assert.Equal(t, []any{1, 2, 3}, got1)
 	assert.Equal(t, []any{1, 2, 3}, got2)

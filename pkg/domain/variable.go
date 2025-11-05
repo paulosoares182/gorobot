@@ -23,7 +23,7 @@ func (v Variable) Validate() error {
 	return nil
 }
 
-func ExtractVariableValue(vars []Variable, text string) string {
+func ExtractAsString(vars []Variable, text string) string {
 	groupRe := regexp.MustCompile(`^(\{+)([a-zA-Z0-9_]+)(\}+)$`)
 	findRe := regexp.MustCompile(`\{+[a-zA-Z0-9_]+\}+`)
 
@@ -86,7 +86,7 @@ func ExtractVariableValue(vars []Variable, text string) string {
 	return result
 }
 
-func ExtractVariableObject(vars []Variable, name string) any {
+func ExtractAsAny(vars []Variable, name string) any {
 
 	v := findVariable(vars, utils.RemoveVariableSyntax(strings.TrimSpace(name)))
 	if v != nil {

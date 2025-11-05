@@ -215,11 +215,11 @@ func (e *EngineImpl) SetVariable(name string, value any) {
 	e.variables = domain.UpsertVariable(e.ListVariable(), name, value)
 }
 
-func (e *EngineImpl) ExtractVariableValue(name string) string {
-	return domain.ExtractVariableValue(e.variables, name)
+func (e *EngineImpl) ExtractAsString(name string) string {
+	return domain.ExtractAsString(e.variables, name)
 }
-func (e *EngineImpl) ExtractVariableObject(name string) any {
-	return domain.ExtractVariableObject(e.variables, name)
+func (e *EngineImpl) ExtractAsAny(name string) any {
+	return domain.ExtractAsAny(e.variables, name)
 }
 
 func (e *EngineImpl) TestCondition(expression string) bool {

@@ -35,7 +35,7 @@ func DefaultInvokeActionCommand() *InvokeActionCommand {
 }
 
 func (c *InvokeActionCommand) Run(engine domain.Engine) (any, error) {
-	v := engine.ExtractVariableObject(c.Name)
+	v := engine.ExtractAsAny(c.Name)
 
 	t, ok := v.(*domain.ActionTemplate)
 	if !ok {
