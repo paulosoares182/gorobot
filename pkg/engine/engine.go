@@ -146,6 +146,7 @@ func (e *EngineImpl) Run(throwException bool) (bool, error) {
 		h(script)
 	}
 
+	script.EnableAllCommands(script.Commands, true)
 	for _, c := range script.Commands {
 		if !e.running {
 			break
@@ -155,13 +156,12 @@ func (e *EngineImpl) Run(throwException bool) (bool, error) {
 				h(err)
 			}
 			if throwException {
-				e.mu.Lock()
-				e.running = false
-				e.mu.Unlock()
-				return false, err
+				panic(err)
 			}
-
-			panic(err)
+			e.mu.Lock()
+			e.running = false
+			e.mu.Unlock()
+			return false, err
 		}
 	}
 
@@ -175,12 +175,15 @@ func (e *EngineImpl) Run(throwException bool) (bool, error) {
 	return true, nil
 }
 
-func (e *EngineImpl) ExecuteCommand(cmd domain.Command) bool {
-	err := e.executeCommand(cmd)
-	return err == nil
+func (e *EngineImpl) ExecuteCommand(cmd domain.Command) error {
+	return e.executeCommand(cmd)
 }
 
 func (e *EngineImpl) executeCommand(cmd domain.Command) error {
+	if !cmd.IsEnabled() {
+		return nil
+	}
+
 	for _, h := range e.commandStarted {
 		h(cmd)
 	}
@@ -222,8 +225,8 @@ func (e *EngineImpl) ExtractAsAny(name string) any {
 	return domain.ExtractAsAny(e.variables, name)
 }
 
-func (e *EngineImpl) TestCondition(expression string) bool {
-	return expression == "true"
+func (e *EngineImpl) TestCondition(expression string) (bool, error) {
+	return TestCondition(expression)
 }
 
 func (e *EngineImpl) GetDateTime(expression string) (time.Time, error) {

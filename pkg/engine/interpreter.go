@@ -2,6 +2,7 @@ package engine
 
 import (
 	"fmt"
+	"gorobot/pkg/utils"
 	"regexp"
 	"strconv"
 	"strings"
@@ -13,9 +14,7 @@ type Interpreter struct{}
 func (i *Interpreter) Run(expression string) (any, error) {
 	expr := i.evaluateMethods(expression)
 
-	//TODO - move this cleanup to utils
-	expr = strings.ReplaceAll(expr, "\r\n", "")
-	expr = strings.ReplaceAll(expr, "\n", "")
+	expr = utils.RemoveNewLines(expr, "")
 
 	res := Calculate(expr)
 

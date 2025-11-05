@@ -36,10 +36,11 @@ func DefaultCreateActionCommand() *CreateActionCommand {
 func (c *CreateActionCommand) Run(e domain.Engine) (any, error) {
 	action := func() {
 		if len(c.Commands) > 0 {
-			// TODO: enable all children commands
+			s := e.GetScript()
+			s.EnableAllCommands(c.Commands)
 			for _, child := range c.Commands {
-				ok := e.ExecuteCommand(child)
-				if !ok {
+				err := e.ExecuteCommand(child)
+				if err != nil {
 					break
 				}
 			}

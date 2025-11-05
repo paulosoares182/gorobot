@@ -29,13 +29,13 @@ func DefaultInvokeActionCommand() *InvokeActionCommand {
 		ScriptCommand: domain.ScriptCommand{
 			ID:              uuid.NewString(),
 			Tag:             InvokeActionCommandTag,
-			CanHaveChildren: true,
+			CanHaveChildren: false,
 		},
 	}
 }
 
-func (c *InvokeActionCommand) Run(engine domain.Engine) (any, error) {
-	v := engine.ExtractAsAny(c.Name)
+func (c *InvokeActionCommand) Run(e domain.Engine) (any, error) {
+	v := e.ExtractAsAny(c.Name)
 
 	t, ok := v.(*domain.ActionTemplate)
 	if !ok {

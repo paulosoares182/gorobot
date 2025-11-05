@@ -8,6 +8,8 @@ type Command interface {
 	GetComment() string
 	SetComment(comment string)
 	CanHaveChildCommands() bool
+	IsEnabled() bool
+	SetEnabled(enabled bool)
 	GetCommands() []Command
 	AddCommand(cmd Command) error
 	Run(engine Engine) (any, error)
@@ -19,6 +21,7 @@ type ScriptCommand struct {
 	Tag             string    `json:"tag"`
 	Comment         string    `json:"comment,omitempty"`
 	CanHaveChildren bool      `json:"-"`
+	Enabled         bool      `json:"-"`
 	Commands        []Command `json:"commands,omitempty"`
 	ParentID        string    `json:"parentId,omitempty"`
 }
@@ -28,8 +31,10 @@ func (c *ScriptCommand) GetTag() string              { return c.Tag }
 func (c *ScriptCommand) GetComment() string          { return c.Comment }
 func (c *ScriptCommand) SetComment(comment string)   { c.Comment = comment }
 func (c *ScriptCommand) CanHaveChildCommands() bool  { return c.CanHaveChildren }
+func (c *ScriptCommand) IsEnabled() bool             { return c.Enabled }
 func (c *ScriptCommand) GetCommands() []Command      { return c.Commands }
 func (c *ScriptCommand) SetParentID(parentID string) { c.ParentID = parentID }
+func (c *ScriptCommand) SetEnabled(enabled bool)     { c.Enabled = enabled }
 
 func (c *ScriptCommand) AddCommand(cmd Command) error {
 	if !c.CanHaveChildren {

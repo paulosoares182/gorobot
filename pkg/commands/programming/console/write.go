@@ -31,7 +31,7 @@ func DefaultWriteCommand() *WriteCommand {
 	}
 }
 
-func (c *WriteCommand) Run(engine domain.Engine) (any, error) {
+func (c *WriteCommand) Run(e domain.Engine) (any, error) {
 	println(c.Message)
 	return c.Message, nil
 }

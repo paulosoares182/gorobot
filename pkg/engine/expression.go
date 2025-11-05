@@ -2,20 +2,19 @@ package engine
 
 import (
 	"errors"
+	"gorobot/pkg/utils"
 	"regexp"
 	"strings"
 )
 
-func TestCondition(expression string) (bool, error) {
-	if strings.TrimSpace(expression) == "" {
+func TestCondition(expr string) (bool, error) {
+	if strings.TrimSpace(expr) == "" {
 		return false, nil
 	}
 
-	//TODO - move this cleanup to utils
-	expression = strings.ReplaceAll(expression, "\r\n", "")
-	expression = strings.ReplaceAll(expression, "\n", "")
+	expr = utils.RemoveNewLines(expr, "")
 
-	res, err := ExecuteExpression(expression)
+	res, err := ExecuteExpression(expr)
 	if err != nil {
 		return false, err
 	}
@@ -37,18 +36,18 @@ func TestCondition(expression string) (bool, error) {
 	}
 }
 
-func ExecuteExpression(expression string) (any, error) {
-	expression = strings.TrimSpace(expression)
-	if expression == "" {
-		return expression, nil
+func ExecuteExpression(expr string) (any, error) {
+	expr = strings.TrimSpace(expr)
+	if expr == "" {
+		return expr, nil
 	}
 
 	re := regexp.MustCompile(`\$\{([\W\w]+)\}`)
-	m := re.FindStringSubmatch(expression)
+	m := re.FindStringSubmatch(expr)
 	if len(m) > 1 {
 		it := Interpreter{}
 		return it.Run(m[1])
 	}
 
-	return expression, nil
+	return expr, nil
 }

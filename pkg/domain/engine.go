@@ -31,7 +31,7 @@ type Engine interface {
 	Run(throwException bool) (bool, error)
 	SetScriptFromJSON(jsonStr string) error
 	SetScript(script *Script)
-	ExecuteCommand(cmd Command) bool
+	ExecuteCommand(cmd Command) error
 	GetScript() *Script
 	GetHttpClient() *http.Client
 
@@ -39,7 +39,7 @@ type Engine interface {
 	ExtractAsString(name string) string
 	ExtractAsAny(name string) any
 
-	TestCondition(expression string) bool
+	TestCondition(expression string) (bool, error)
 	GetDateTime(expression string) (time.Time, error)
 	ExecuteExpression(expression string) (any, error)
 
