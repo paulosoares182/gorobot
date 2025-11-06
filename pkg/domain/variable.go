@@ -95,18 +95,22 @@ func ExtractAsAny(vars []Variable, name string) any {
 	return nil
 }
 
-func UpsertVariable(vars []Variable, name string, value any) []Variable {
+func UpsertVariable(vars []Variable, name string, value any) ([]Variable, error) {
+	if ok := IsValidVariableName(name); !ok {
+		return vars, fmt.Errorf("variable name '%s' is not valid", name)
+	}
+
 	v := findVariable(vars, name)
 	if v != nil {
 		v.Value = value
-		return vars
+		return vars, nil
 	}
 
 	vars = append(vars, Variable{
 		Name:  name,
 		Value: value,
 	})
-	return vars
+	return vars, nil
 }
 
 func RemoveVariable(vars []Variable, name string) []Variable {
@@ -120,6 +124,10 @@ func RemoveVariable(vars []Variable, name string) []Variable {
 
 func IsValidVariableSyntax(text string) bool {
 	return regexp.MustCompile(`^\{[a-zA-Z0-9_]+\}$`).MatchString(strings.TrimSpace(text))
+}
+
+func IsValidVariableName(name string) bool {
+	return regexp.MustCompile(`^[a-zA-Z0-9_]+$`).MatchString(strings.TrimSpace(name))
 }
 
 func isPrimitiveType(v any) bool {

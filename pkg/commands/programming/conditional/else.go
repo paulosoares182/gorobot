@@ -3,8 +3,6 @@ package commands
 import (
 	"gorobot/pkg/domain"
 	"reflect"
-
-	"github.com/google/uuid"
 )
 
 type ElseCommand struct {
@@ -21,11 +19,7 @@ func NewElseCommand() *ElseCommand {
 
 func DefaultElseCommand() *ElseCommand {
 	return &ElseCommand{
-		ScriptCommand: domain.ScriptCommand{
-			ID:              uuid.NewString(),
-			Tag:             ElseCommandTag,
-			CanHaveChildren: true,
-		},
+		ScriptCommand: domain.NewCommand(ElseCommandTag, true),
 	}
 }
 

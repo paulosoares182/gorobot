@@ -162,7 +162,8 @@ func TestUpsertVariable_NewVariable(t *testing.T) {
 	vars := []Variable{
 		{Name: "var1", Value: "value1"},
 	}
-	updatedVars := UpsertVariable(vars, "var2", 182.00)
+	updatedVars, err := UpsertVariable(vars, "var2", 182.00)
+	assert.Nil(t, err)
 	assert.Len(t, updatedVars, 2)
 	assert.Equal(t, 182.00, updatedVars[1].Value)
 }
@@ -171,7 +172,8 @@ func TestUpsertVariable_UpdateExistingVariable(t *testing.T) {
 	vars := []Variable{
 		{Name: "var1", Value: "value1"},
 	}
-	updatedVars := UpsertVariable(vars, "var1", 1912)
+	updatedVars, err := UpsertVariable(vars, "var1", 1912)
+	assert.Nil(t, err)
 	assert.Len(t, updatedVars, 1)
 	assert.Equal(t, 1912, updatedVars[0].Value)
 }
@@ -185,6 +187,15 @@ func TestRemoveVariable_RemoveExistingVariable(t *testing.T) {
 	updatedVars := RemoveVariable(vars, "var1")
 	assert.Len(t, updatedVars, 1)
 	assert.Equal(t, "var2", updatedVars[0].Name)
+}
+
+func TestUpsertVariable_NewVariable_ShouldReturnError(t *testing.T) {
+	vars := []Variable{
+		{Name: "var1", Value: "value1"},
+	}
+	updatedVars, err := UpsertVariable(vars, "var 2", 182.00)
+	assert.Error(t, err)
+	assert.Len(t, updatedVars, 1)
 }
 
 func TestRemoveVariable_DontRemoveVariableIfDoesNotExist(t *testing.T) {

@@ -3,8 +3,6 @@ package commands
 import (
 	"gorobot/pkg/domain"
 	"reflect"
-
-	"github.com/google/uuid"
 )
 
 type CreateActionCommand struct {
@@ -25,15 +23,13 @@ func NewCreateActionCommand(name string, parameters *string) *CreateActionComman
 
 func DefaultCreateActionCommand() *CreateActionCommand {
 	return &CreateActionCommand{
-		ScriptCommand: domain.ScriptCommand{
-			ID:              uuid.NewString(),
-			Tag:             CreateActionCommandTag,
-			CanHaveChildren: true,
-		},
+		ScriptCommand: domain.NewCommand(CreateActionCommandTag, true),
 	}
 }
 
 func (c *CreateActionCommand) Run(e domain.Engine) (any, error) {
+	n := e.ExtractAsString(c.Name)
+
 	action := func() {
 		if len(c.Commands) > 0 {
 			s := e.GetScript()
@@ -49,7 +45,7 @@ func (c *CreateActionCommand) Run(e domain.Engine) (any, error) {
 
 	//TODO - handle parameters
 	t := domain.NewActionTemplate(action, []domain.ActionArgs{})
-	e.SetVariable(c.Name, t)
+	err := e.SetVariable(n, t)
 
-	return nil, nil
+	return nil, err
 }

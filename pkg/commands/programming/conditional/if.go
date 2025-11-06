@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"gorobot/pkg/domain"
 	"reflect"
-
-	"github.com/google/uuid"
 )
 
 type IfCommand struct {
@@ -24,16 +22,14 @@ func NewIfCommand(expression string) *IfCommand {
 
 func DefaultIfCommand() *IfCommand {
 	return &IfCommand{
-		ScriptCommand: domain.ScriptCommand{
-			ID:              uuid.NewString(),
-			Tag:             IfCommandTag,
-			CanHaveChildren: true,
-		},
+		ScriptCommand: domain.NewCommand(IfCommandTag, true),
 	}
 }
 
 func (c *IfCommand) Run(e domain.Engine) (any, error) {
-	ok, err := e.TestCondition(fmt.Sprintf("${%s}", c.Expression))
+	expr := e.ExtractAsString(c.Expression)
+	ok, err := e.TestCondition(fmt.Sprintf("${%s}", expr))
+
 	if ok {
 		c.disableNextElse(e)
 

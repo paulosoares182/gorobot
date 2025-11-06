@@ -214,8 +214,17 @@ func (e *EngineImpl) executeCommand(cmd domain.Command) error {
 	return nil
 }
 
-func (e *EngineImpl) SetVariable(name string, value any) {
-	e.variables = domain.UpsertVariable(e.ListVariable(), name, value)
+func (e *EngineImpl) SetVariable(name string, value any) error {
+	v, err := domain.UpsertVariable(e.variables, name, value)
+	if err != nil {
+		return err
+	}
+	e.variables = v
+	return nil
+}
+
+func (e *EngineImpl) DeleteVariable(name string) {
+	e.variables = domain.RemoveVariable(e.variables, name)
 }
 
 func (e *EngineImpl) ExtractAsString(name string) string {

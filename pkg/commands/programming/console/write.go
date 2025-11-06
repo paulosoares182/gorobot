@@ -3,8 +3,6 @@ package commands
 import (
 	"gorobot/pkg/domain"
 	"reflect"
-
-	"github.com/google/uuid"
 )
 
 type WriteCommand struct {
@@ -23,15 +21,11 @@ func NewWriteCommand(message string) *WriteCommand {
 
 func DefaultWriteCommand() *WriteCommand {
 	return &WriteCommand{
-		ScriptCommand: domain.ScriptCommand{
-			ID:              uuid.NewString(),
-			Tag:             WriteCommandTag,
-			CanHaveChildren: false,
-		},
+		ScriptCommand: domain.NewCommand(WriteCommandTag, false),
 	}
 }
 
 func (c *WriteCommand) Run(e domain.Engine) (any, error) {
-	println(c.Message)
-	return c.Message, nil
+	m := e.ExtractAsString(c.Message)
+	return m, nil
 }

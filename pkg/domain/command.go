@@ -1,6 +1,10 @@
 package domain
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/google/uuid"
+)
 
 type Command interface {
 	GetID() string
@@ -35,6 +39,7 @@ func (c *ScriptCommand) IsEnabled() bool             { return c.Enabled }
 func (c *ScriptCommand) GetCommands() []Command      { return c.Commands }
 func (c *ScriptCommand) SetParentID(parentID string) { c.ParentID = parentID }
 func (c *ScriptCommand) SetEnabled(enabled bool)     { c.Enabled = enabled }
+func (c *ScriptCommand) Validate() error             { return nil }
 
 func (c *ScriptCommand) AddCommand(cmd Command) error {
 	if !c.CanHaveChildren {
@@ -43,4 +48,12 @@ func (c *ScriptCommand) AddCommand(cmd Command) error {
 	cmd.SetParentID(c.ID)
 	c.Commands = append(c.Commands, cmd)
 	return nil
+}
+
+func NewCommand(tag string, canHaveChildren bool) ScriptCommand {
+	return ScriptCommand{
+		ID:              uuid.NewString(),
+		Tag:             tag,
+		CanHaveChildren: canHaveChildren,
+	}
 }

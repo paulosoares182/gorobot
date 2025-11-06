@@ -35,7 +35,8 @@ type Engine interface {
 	GetScript() *Script
 	GetHttpClient() *http.Client
 
-	SetVariable(name string, value any)
+	SetVariable(name string, value any) error
+	DeleteVariable(name string)
 	ExtractAsString(name string) string
 	ExtractAsAny(name string) any
 

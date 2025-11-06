@@ -4,8 +4,6 @@ import (
 	"errors"
 	"gorobot/pkg/domain"
 	"reflect"
-
-	"github.com/google/uuid"
 )
 
 type InvokeActionCommand struct {
@@ -26,20 +24,17 @@ func NewInvokeActionCommand(name string, parameters *string) *InvokeActionComman
 
 func DefaultInvokeActionCommand() *InvokeActionCommand {
 	return &InvokeActionCommand{
-		ScriptCommand: domain.ScriptCommand{
-			ID:              uuid.NewString(),
-			Tag:             InvokeActionCommandTag,
-			CanHaveChildren: false,
-		},
+		ScriptCommand: domain.NewCommand(InvokeActionCommandTag, false),
 	}
 }
 
 func (c *InvokeActionCommand) Run(e domain.Engine) (any, error) {
-	v := e.ExtractAsAny(c.Name)
+	n := e.ExtractAsString(c.Name)
+	v := e.ExtractAsAny(n)
 
 	t, ok := v.(*domain.ActionTemplate)
 	if !ok {
-		return nil, errors.New("action not found: " + c.Name)
+		return nil, errors.New("action not found: " + n)
 	}
 
 	t.Action()

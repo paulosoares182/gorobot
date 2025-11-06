@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"gorobot/pkg/domain"
 	"reflect"
-
-	"github.com/google/uuid"
 )
 
 type ElseIfCommand struct {
@@ -24,16 +22,13 @@ func NewElseIfCommand(expression string) *ElseIfCommand {
 
 func DefaultElseIfCommand() *ElseIfCommand {
 	return &ElseIfCommand{
-		ScriptCommand: domain.ScriptCommand{
-			ID:              uuid.NewString(),
-			Tag:             ElseIfCommandTag,
-			CanHaveChildren: true,
-		},
+		ScriptCommand: domain.NewCommand(ElseIfCommandTag, true),
 	}
 }
 
 func (c *ElseIfCommand) Run(e domain.Engine) (any, error) {
-	ok, err := e.TestCondition(fmt.Sprintf("${%s}", c.Expression))
+	expr := e.ExtractAsString(c.Expression)
+	ok, err := e.TestCondition(fmt.Sprintf("${%s}", expr))
 
 	if ok {
 		c.disableNextElse(e)
